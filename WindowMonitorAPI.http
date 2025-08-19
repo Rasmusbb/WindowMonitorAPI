@@ -1,0 +1,6 @@
+@WindowMonitorAPI_HostAddress = http://localhost:5007
+
+GET {{WindowMonitorAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

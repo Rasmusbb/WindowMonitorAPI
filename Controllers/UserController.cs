@@ -1,6 +1,6 @@
-﻿using BoilerMonitoringAPI.Data;
-using BoilerMonitoringAPI.DTOs;
-using BoilerMonitoringAPI.Models;
+﻿using WindowMonitorAPI.Data;
+using WindowMonitorAPI.DTOs;
+using WindowMonitorAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Mapster;
@@ -11,30 +11,29 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace BoilerMonitoringAPI.Controllers
+namespace WindowMonitorAPI.Controllers
 {
     [ApiController]
     [Route("[Controller]")]
     public class UserController : Controller
     {
         private readonly string DsetNull = "Entity set 'DatabaseContext.User'  is null.";
-        private readonly BoilerMonitoringAPIContext _context;
+        private readonly DatabaseContext _context;
         private readonly IConfiguration _configuration;
-        public UserController(BoilerMonitoringAPIContext context, IConfiguration iConfig)
+        public UserController(DatabaseContext context, IConfiguration iConfig)
         {
             _context = context;
             _configuration = iConfig;
         }
 
         [HttpGet("Login")]
-        public async Task<ActionResult<string>> Login(string Email, string Password)
+        public async Task<ActionResult<string>> Login(string Username, string Password)
         {
             if (_context.Users == null)
             {
                 return Problem(DsetNull);
             }
-            Email = Email.ToLower();
-            User user = _context.Users.FirstOrDefault(u => u.Email == Email);
+            User user = _context.Users.FirstOrDefault(u => u.UserName == Username);
             if (user != null)
             {
                 string hash = Hash(Password + user.UserID);
@@ -75,11 +74,7 @@ namespace BoilerMonitoringAPI.Controllers
 
         }
 
-        [HttpGet("GetUsersHomes")]
-        public async Task<ActionResult<List<Home>> GetUserHomes(Guid UserID)
-        {
-           List<Home> homes = _context.Homes.Where()
-        }
+
 
         [HttpGet("GetUser")]
         public async Task<ActionResult<UserDTOID>> GetUser(Guid UserID)
@@ -116,7 +111,6 @@ namespace BoilerMonitoringAPI.Controllers
             {
                 new Claim("userID", user.UserID.ToString()),
                 new Claim("Name", user.UserName.ToString()),
-                new Claim("Email",user.Email.ToString())
             };
             var token = new JwtSecurityToken(
                 issuer: "BoilerMonitorAPI",

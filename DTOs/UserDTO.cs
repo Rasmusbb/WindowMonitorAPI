@@ -1,6 +1,6 @@
-﻿using BoilerMonitoringAPI.Models;
+﻿using WindowMonitorAPI.Models;
 
-namespace BoilerMonitoringAPI.DTOs
+namespace WindowMonitorAPI.DTOs
 {
     public class UserDTO
     {
